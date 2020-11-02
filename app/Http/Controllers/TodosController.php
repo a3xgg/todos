@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\TodosService;
 use App\Todo;
 use Illuminate\Http\Request;
 
 class TodosController extends Controller
 {
+
+    private $todoService;
+
+    public function __construct(TodosService $todoService){
+        $this->todoService = $todoService;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $todos = Todo::all();
-
-        return view('todos.index')->withTodos($todos);
+        if($request->wantsJson()){
+            return $this->todoService->all();
+        }
+        return view('todos.index');
     }
 
     /**
