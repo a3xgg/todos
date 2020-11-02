@@ -49420,8 +49420,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      todos: [{
+        id: 1,
+        title: 'test'
+      }, {
+        id: 2,
+        title: 'test2'
+      }]
+    };
+  },
   mounted: function mounted() {
     console.log("Hello World");
   }
@@ -49435,7 +49462,34 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", { staticClass: "row" }, [
+    _c("div", { staticClass: "container" }, [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-md-6 mx-auto" }, [
+          _c("h1", { staticClass: "todos-title" }, [_vm._v("Todos")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "todos-wrapper" }, [
+            _c(
+              "ul",
+              { staticClass: "list-group todos-list" },
+              _vm._l(_vm.todos, function(todo) {
+                return _c(
+                  "li",
+                  { staticClass: "list-group-item todos-list-item" },
+                  [
+                    _c("a", { attrs: { href: "" } }, [
+                      _vm._v(_vm._s(todo.title))
+                    ])
+                  ]
+                )
+              }),
+              0
+            )
+          ])
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
