@@ -49430,12 +49430,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       todos: [],
-      title: ''
+      title: '',
+      btnType: 'create',
+      todo: {}
     };
   },
   mounted: function mounted() {
@@ -49478,12 +49488,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     deleteTodo: function deleteTodo(todoObj) {
       var _this4 = this;
 
+      if (this.btnType === "edit") {
+        this.btnType = 'create';
+      }
       axios.delete('/todos/' + todoObj.id).then(function (res) {
         console.log(res);
         _this4.getTodos();
       }).catch(function (err) {
         console.log(err);
       });
+    },
+    editView: function editView(todoObj) {
+      this.todo = todoObj;
+      this.btnType = 'edit';
+      console.log(todo.title);
     }
   }
 });
@@ -49518,18 +49536,31 @@ var render = function() {
                       _vm._v(_vm._s(todo.title))
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary btn-small",
-                        on: {
-                          click: function($event) {
-                            return _vm.editTodo(todo)
-                          }
-                        }
-                      },
-                      [_vm._v(" edit ")]
-                    ),
+                    _vm.btnType === "edit"
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-warning btn-small",
+                            on: {
+                              click: function($event) {
+                                _vm.btnType = "create"
+                              }
+                            }
+                          },
+                          [_vm._v(" cancel ")]
+                        )
+                      : _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary btn-small",
+                            on: {
+                              click: function($event) {
+                                return _vm.editView(todo)
+                              }
+                            }
+                          },
+                          [_vm._v(" edit ")]
+                        ),
                     _vm._v(" "),
                     _c(
                       "button",
@@ -49542,28 +49573,7 @@ var render = function() {
                         }
                       },
                       [_vm._v(" delete ")]
-                    ),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: todo.newTitle,
-                          expression: "todo.newTitle"
-                        }
-                      ],
-                      attrs: { type: "text" },
-                      domProps: { value: todo.newTitle },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.$set(todo, "newTitle", $event.target.value)
-                        }
-                      }
-                    })
+                    )
                   ]
                 )
               }),
@@ -49573,46 +49583,64 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c(
-        "form",
-        {
-          on: {
-            submit: function($event) {
-              $event.preventDefault()
-              return _vm.createTodo($event)
-            }
-          }
-        },
-        [
-          _c("label", { attrs: { for: "title" } }, [_vm._v("New Todo")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.title,
-                expression: "title"
-              }
-            ],
-            staticClass: "form-control",
-            attrs: { id: "title" },
-            domProps: { value: _vm.title },
-            on: {
-              input: function($event) {
-                if ($event.target.composing) {
-                  return
+      _vm.btnType === "create"
+        ? _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.createTodo($event)
                 }
-                _vm.title = $event.target.value
               }
-            }
-          }),
-          _vm._v(" "),
-          _c("button", { staticClass: "btn btn-primary btn-block" }, [
-            _vm._v("Create Todo")
-          ])
-        ]
-      )
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.title,
+                    expression: "title"
+                  }
+                ],
+                staticClass: "form-control mt-3",
+                domProps: { value: _vm.title },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.title = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("button", { staticClass: "btn btn-primary btn-block mt-3" }, [
+                _vm._v("Create Todo")
+              ])
+            ]
+          )
+        : _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                }
+              }
+            },
+            [
+              _c("input", {
+                staticClass: "form-control mt-3",
+                domProps: { value: _vm.todo.title }
+              }),
+              _vm._v(" "),
+              _c("button", { staticClass: "btn btn-success btn-block mt-3" }, [
+                _vm._v("Edit Todo")
+              ])
+            ]
+          )
     ])
   ])
 }
