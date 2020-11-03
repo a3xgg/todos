@@ -49438,6 +49438,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -49445,7 +49446,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       todos: [],
       title: '',
       btnType: 'create',
-      todo: {}
+      todo: {},
+      btnText: 'Edit'
     };
   },
   mounted: function mounted() {
@@ -49460,6 +49462,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var data = _ref.data;
 
         _this.todos = data;
+        _this.btnType = 'create';
+        console.log(_this.btnText);
       }, function (error) {
         console.log(error);
       });
@@ -49493,15 +49497,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       axios.delete('/todos/' + todoObj.id).then(function (res) {
         console.log(res);
+        _this4.btnText = "Edit";
         _this4.getTodos();
       }).catch(function (err) {
         console.log(err);
       });
     },
-    editView: function editView(todoObj) {
+    view: function view(todoObj) {
       this.todo = todoObj;
-      this.btnType = 'edit';
-      console.log(todo.title);
+      if (this.btnType === "edit") {
+        this.btnText = 'Cancel';
+        this.btnType = 'create';
+        this.todo = {};
+      } else if (this.btnType === "create") {
+        this.btnType = 'edit';
+        this.btnText = 'Edit';
+      }
+      console.log(this.btnType);
+    },
+    getAttribute: function getAttribute(todoId) {
+      return todoId === this.todo.id ? "btn btn-warning btn-small" : "btn btn-primary btn-small";
+    },
+    getBtnText: function getBtnText(todoId) {
+      return todoId === this.todo.id ? this.btnText = 'Cancel' : this.btnText = 'Edit';
     }
   }
 });
@@ -49536,30 +49554,30 @@ var render = function() {
                       _vm._v(_vm._s(todo.title))
                     ]),
                     _vm._v(" "),
-                    _vm.btnType === "edit"
+                    _vm.btnType !== "edit"
                       ? _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-warning btn-small",
-                            on: {
-                              click: function($event) {
-                                _vm.btnType = "create"
-                              }
-                            }
-                          },
-                          [_vm._v(" cancel ")]
-                        )
-                      : _c(
                           "button",
                           {
                             staticClass: "btn btn-primary btn-small",
                             on: {
                               click: function($event) {
-                                return _vm.editView(todo)
+                                return _vm.view(todo)
                               }
                             }
                           },
-                          [_vm._v(" edit ")]
+                          [_vm._v(_vm._s(_vm.getBtnText(todo.id)))]
+                        )
+                      : _c(
+                          "button",
+                          {
+                            class: _vm.getAttribute(todo.id),
+                            on: {
+                              click: function($event) {
+                                return _vm.view(todo)
+                              }
+                            }
+                          },
+                          [_vm._v(" " + _vm._s(_vm.getBtnText(todo.id)) + " ")]
                         ),
                     _vm._v(" "),
                     _c(
@@ -49572,7 +49590,7 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v(" delete ")]
+                      [_vm._v(" Delete ")]
                     )
                   ]
                 )
@@ -49627,13 +49645,31 @@ var render = function() {
               on: {
                 submit: function($event) {
                   $event.preventDefault()
+                  return _vm.editTodo(_vm.todo)
                 }
               }
             },
             [
               _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.todo.newTitle,
+                    expression: "todo.newTitle"
+                  }
+                ],
                 staticClass: "form-control mt-3",
-                domProps: { value: _vm.todo.title }
+                attrs: { placeholder: "editing for: " + _vm.todo.title },
+                domProps: { value: _vm.todo.newTitle },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.todo, "newTitle", $event.target.value)
+                  }
+                }
               }),
               _vm._v(" "),
               _c("button", { staticClass: "btn btn-success btn-block mt-3" }, [

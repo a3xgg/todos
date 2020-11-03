@@ -9,10 +9,10 @@
               <li class="list-group-item todos-list-item" v-for="todo in todos" v-bind:key="todo.id">
                 <a class="todos-list-item-link">{{ todo.title }}</a>
 
-                <button class="btn btn-warning btn-small" v-if="btnType==='edit'" @click="btnType='create'"> cancel </button>
-                <button class="btn btn-primary btn-small" v-else @click="editView(todo)"> edit </button>
+                <button class="btn btn-primary btn-small" @click="view(todo)" v-if="btnType !== 'edit'">{{ getBtnText(todo.id) }}</button>
+                <button :class="getAttribute(todo.id)" @click="view(todo)" v-else> {{ getBtnText(todo.id) }} </button>
 
-                <button class="btn btn-danger btn-small" @click="deleteTodo(todo)"> delete </button>
+                <button class="btn btn-danger btn-small" @click="deleteTodo(todo)"> Delete </button>
               </li>
             </ul>
           </div>
@@ -25,10 +25,11 @@
       </form>
 
       <!-- Edit Todo -->
-      <form @submit.prevent="" v-else>
-        <input class="form-control mt-3" :value="todo.title">
+      <form @submit.prevent="editTodo(todo)" v-else>
+        <input class="form-control mt-3" v-model="todo.newTitle" :placeholder="'editing for: ' + todo.title">
         <button class="btn btn-success btn-block mt-3">Edit Todo</button>
       </form>
+
     </div>
   </div>
 </template>
@@ -41,6 +42,7 @@ export default {
         title:'',
         btnType:'create',
         todo:{},
+        btnText: 'Edit'
       };
     },
   mounted() {
@@ -50,6 +52,8 @@ export default {
     getTodos: function(){
       axios.get('/todos').then(({data}) => {
         this.todos = data;
+        this.btnType = 'create';
+        console.log(this.btnText);
       }, (error) => {console.log(error)});
     },
     createTodo: function(){
@@ -80,17 +84,31 @@ export default {
       axios.delete(`/todos/${todoObj.id}`)
       .then((res)=>{
         console.log(res);
+        this.btnText = "Edit";
         this.getTodos();
       })
       .catch((err)=>{
         console.log(err);
       });
     },
-    editView: function(todoObj){
+    view: function(todoObj){
       this.todo = todoObj;
-      this.btnType = 'edit';
-      console.log(todo.title);
-    }
+      if(this.btnType === "edit") {
+        this.btnText = 'Cancel';
+        this.btnType = 'create';
+        this.todo = {};
+      } else if(this.btnType === "create") {
+        this.btnType = 'edit';
+        this.btnText = 'Edit';
+      }
+      console.log(this.btnType);
+    },
+    getAttribute: function(todoId){
+      return todoId === this.todo.id ? "btn btn-warning btn-small" : "btn btn-primary btn-small";
+    },
+    getBtnText: function(todoId){
+      return todoId === this.todo.id ? this.btnText = 'Cancel' : this.btnText = 'Edit';
+    },
   }
 }
 </script>
