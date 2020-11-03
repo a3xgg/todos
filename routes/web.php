@@ -10,11 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::put('todos/{todo}', 'TodosController@update')->name('todos.update');
 Route::delete('todos/{todo}', 'TodosController@destroy')->name('todos.delete');
 
 Route::get('todos/{todo}/edit', 'TodosController@edit')->name('todos.edit');
-Route::put('todos/{todo}', 'TodosController@update')->name('todos.update');
+
 
 Route::get('todos/create', 'TodosController@create')->name('todos.create');
 Route::post('todos', 'TodosController@store')->name('todos.store');

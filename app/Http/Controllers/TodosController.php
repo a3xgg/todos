@@ -82,7 +82,7 @@ class TodosController extends Controller
 
         $todo->save();
 
-        return redirect()->route('todos.index');
+        // return redirect()->route('todos.index');
     }
 
     /**
@@ -94,7 +94,5 @@ class TodosController extends Controller
     public function destroy(Todo $todo)
     {
         $todo->delete();
-
-        return redirect()->route('todos.index');
     }
 }

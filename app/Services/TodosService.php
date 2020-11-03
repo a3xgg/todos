@@ -4,7 +4,7 @@
 
   use App\Todo;
 
-  class TodosServices extends TransformerService{
+  class TodosService extends TransformerService{
     public function transform($todo){
       return [
         'id' => $todo->id,
