@@ -21,7 +21,6 @@
         <input id="title" class="form-control" v-model="title">
         <button class="btn btn-primary btn-block">Create Todo</button>
       </form>
-      
     </div>
   </div>
 </template>
